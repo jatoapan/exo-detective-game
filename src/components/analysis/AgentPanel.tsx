@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { PlanetCandidate, AgentParameter } from "@/types/exoplanet";
 import { Button } from "@/components/ui/button";
+import { RadialProgress } from "@/components/ui/radial-progress";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
 interface AgentPanelProps {
@@ -16,18 +17,26 @@ export const AgentPanel = ({ agentType, planet }: AgentPanelProps) => {
   return (
     <div className="glass-card p-8 space-y-6">
       {/* Agent Header */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-2xl font-bold text-primary">
+      <div className="space-y-6">
+        <div className="text-center space-y-4">
+          <h3 className="text-3xl font-bold text-primary">
             {agentConfig.icon} {agentConfig.name}
           </h3>
-          <div className={`text-4xl font-bold ${agentConfig.outputColor}`}>
-            {agentConfig.output}
-          </div>
+          <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto">
+            {agentConfig.description}
+          </p>
         </div>
-        <p className="text-muted-foreground leading-relaxed">
-          {agentConfig.description}
-        </p>
+
+        {/* Visual Output - Radial Progress */}
+        <div className="flex justify-center py-4">
+          <RadialProgress
+            value={agentConfig.outputValue}
+            size={140}
+            strokeWidth={12}
+            color={agentConfig.outputColorType}
+            label={agentConfig.outputLabel}
+          />
+        </div>
       </div>
 
       {/* Main Metrics */}
@@ -112,6 +121,9 @@ function getAgentConfig(agentType: string, planet: PlanetCandidate) {
         icon: "🔍",
         description: "Evalúa la calidad, forma y claridad de la señal del tránsito (la caída de brillo). Su objetivo es determinar si la señal es robusta y tiene la morfología de un tránsito planetario.",
         output: `${agentAnalysis.silhouetteTracker.confidence}%`,
+        outputValue: agentAnalysis.silhouetteTracker.confidence,
+        outputColorType: agentAnalysis.silhouetteTracker.confidence >= 70 ? "success" as const : agentAnalysis.silhouetteTracker.confidence >= 40 ? "warning" as const : "danger" as const,
+        outputLabel: "Confianza",
         outputColor: "text-primary",
         mainMetrics: [
           {
@@ -160,6 +172,9 @@ function getAgentConfig(agentType: string, planet: PlanetCandidate) {
         icon: "⏱️",
         description: "Se enfoca exclusivamente en la periodicidad y regularidad de la órbita. Su objetivo es confirmar que la señal se repite de manera estable y predecible, como un reloj.",
         output: `${agentAnalysis.galacticMetronome.precision}%`,
+        outputValue: agentAnalysis.galacticMetronome.precision,
+        outputColorType: agentAnalysis.galacticMetronome.precision >= 80 ? "success" as const : agentAnalysis.galacticMetronome.precision >= 50 ? "warning" as const : "danger" as const,
+        outputLabel: "Precisión",
         outputColor: "text-secondary",
         mainMetrics: [
           {
@@ -197,6 +212,9 @@ function getAgentConfig(agentType: string, planet: PlanetCandidate) {
         icon: "⚖️",
         description: "Evalúa las características de la estrella anfitriona para proveer contexto físico. Ayuda a determinar si el sistema es físicamente plausible.",
         output: `${agentAnalysis.realityCensor.plausibility}%`,
+        outputValue: agentAnalysis.realityCensor.plausibility,
+        outputColorType: agentAnalysis.realityCensor.plausibility >= 70 ? "success" as const : agentAnalysis.realityCensor.plausibility >= 40 ? "warning" as const : "danger" as const,
+        outputLabel: "Plausibilidad",
         outputColor: "text-accent",
         mainMetrics: [
           {
@@ -267,6 +285,9 @@ function getAgentConfig(agentType: string, planet: PlanetCandidate) {
         icon: "🚫",
         description: "Actúa como un detector especializado en firmas conocidas que indican un falso positivo de origen instrumental o por contaminación de otras estrellas.",
         output: `${agentAnalysis.antiMirage.risk}%`,
+        outputValue: agentAnalysis.antiMirage.risk,
+        outputColorType: agentAnalysis.antiMirage.risk < 30 ? "success" as const : agentAnalysis.antiMirage.risk < 60 ? "warning" as const : "danger" as const,
+        outputLabel: "Riesgo",
         outputColor: agentAnalysis.antiMirage.risk > 50 ? "text-destructive" : "text-green-400",
         mainMetrics: [
           {
@@ -310,6 +331,9 @@ function getAgentConfig(agentType: string, planet: PlanetCandidate) {
         icon: "❓",
         description: "",
         output: "N/A",
+        outputValue: 0,
+        outputColorType: "primary" as const,
+        outputLabel: "N/A",
         outputColor: "",
         mainMetrics: [],
         expertParams: []
