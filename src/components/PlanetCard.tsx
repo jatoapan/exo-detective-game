@@ -18,6 +18,11 @@ export const PlanetCard = ({ planet, onClick }: PlanetCardProps) => {
           src={planet.imageUrl}
           alt={planet.name}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+          onError={(e) => {
+            // Fallback image si la imagen no carga
+            e.currentTarget.src =
+              "https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?w=800&h=800&fit=crop";
+          }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
       </div>
@@ -29,7 +34,9 @@ export const PlanetCard = ({ planet, onClick }: PlanetCardProps) => {
             {planet.name}
           </h3>
           <p className="text-sm text-muted-foreground">
-            Candidato a Exoplaneta
+            {planet.isConfirmed
+              ? "Exoplaneta Confirmado"
+              : "Candidato a Exoplaneta"}
           </p>
         </div>
 
@@ -38,23 +45,34 @@ export const PlanetCard = ({ planet, onClick }: PlanetCardProps) => {
           <div className="flex items-center gap-2">
             <Globe className="h-4 w-4 text-primary" />
             <span className="text-muted-foreground">
-              {planet.preliminaryData.planetRadius.toFixed(2)} R⊕
+              {planet.preliminaryData.planetRadius > 0
+                ? `${planet.preliminaryData.planetRadius.toFixed(2)} R⊕`
+                : "N/A"}
             </span>
           </div>
           <div className="flex items-center gap-2">
             <ThermometerSun className="h-4 w-4 text-accent" />
             <span className="text-muted-foreground">
-              {planet.preliminaryData.equilibriumTemp}K
+              {planet.preliminaryData.equilibriumTemp > 0
+                ? `${planet.preliminaryData.equilibriumTemp.toFixed(0)}K`
+                : "N/A"}
             </span>
           </div>
         </div>
 
-        {/* Habitable Zone Badge */}
-        {planet.preliminaryData.habitableZone && (
-          <div className="inline-block px-3 py-1 bg-primary/20 text-primary text-xs font-semibold rounded-full border border-primary/30">
-            Zona Habitable
-          </div>
-        )}
+        {/* Status Badges */}
+        <div className="flex flex-wrap gap-2">
+          {planet.preliminaryData.habitableZone && (
+            <div className="inline-block px-3 py-1 bg-primary/20 text-primary text-xs font-semibold rounded-full border border-primary/30">
+              Zona Habitable
+            </div>
+          )}
+          {planet.isConfirmed && (
+            <div className="inline-block px-3 py-1 bg-green-500/20 text-green-400 text-xs font-semibold rounded-full border border-green-500/30">
+              Confirmado
+            </div>
+          )}
+        </div>
       </div>
     </button>
   );

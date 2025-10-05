@@ -5,7 +5,8 @@ import { AnalysisCenter } from "@/components/AnalysisCenter";
 import { VerdictScreen } from "@/components/VerdictScreen";
 import { PlanetCandidate } from "@/types/exoplanet";
 import { getCandidates } from "@/services/api";
-import { Loader2 } from "lucide-react";
+import { Loader2, AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 type ViewState = "landing" | "grid" | "analysis" | "verdict";
 
@@ -16,6 +17,7 @@ const Index = () => {
   const [userGuess, setUserGuess] = useState<boolean | null>(null);
   const [isCorrect, setIsCorrect] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Load planets when entering grid view
   useEffect(() => {
@@ -26,11 +28,19 @@ const Index = () => {
 
   const loadPlanets = async () => {
     setLoading(true);
+    setError(null);
     try {
+      console.log("Starting to load planets...");
       const data = await getCandidates();
+      console.log("Loaded planets:", data.length);
       setPlanets(data);
+      
+      if (data.length === 0) {
+        setError("No se pudieron cargar los datos. Inténtalo de nuevo más tarde.");
+      }
     } catch (error) {
       console.error("Error loading planets:", error);
+      setError("Error al conectar con la API. Verifica tu conexión a internet.");
     } finally {
       setLoading(false);
     }
@@ -63,12 +73,40 @@ const Index = () => {
     setCurrentView("grid");
   };
 
+  const handleRetry = () => {
+    loadPlanets();
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center space-y-4">
           <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto" />
           <p className="text-xl text-muted-foreground">Cargando datos del observatorio...</p>
+          <p className="text-sm text-muted-foreground">Conectando con la NASA...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error && currentView === "grid") {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-6">
+        <div className="max-w-md w-full">
+          <Alert className="border-destructive/50">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription className="mt-2">
+              {error}
+            </AlertDescription>
+          </Alert>
+          <div className="mt-4 text-center">
+            <button
+              onClick={handleRetry}
+              className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/80 transition-colors"
+            >
+              Reintentar
+            </button>
+          </div>
         </div>
       </div>
     );

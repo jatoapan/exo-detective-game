@@ -64,7 +64,7 @@ export const HeroSection = ({ onStartMission }: HeroSectionProps) => {
             </h2>
             <p className="text-sm text-muted-foreground">
               Tu objetivo: evaluar candidatos a exoplanetas usando datos reales de la NASA. 
-              Cuatro agentes de IA te ayudarán a interpretar las señales. Cada decisión te acerca 
+              Cinco agentes de IA te ayudarán a interpretar las señales. Cada decisión te acerca 
               a descubrir si estamos solos en el universo.
             </p>
           </div>
@@ -82,11 +82,11 @@ export const HeroSection = ({ onStartMission }: HeroSectionProps) => {
           {/* Stats */}
           <div className="flex justify-center gap-8 md:gap-16 pt-8 text-sm">
             <div>
-              <div className="text-3xl font-bold text-primary">5,000+</div>
+              <div className="text-3xl font-bold text-primary">1000+</div>
               <div className="text-muted-foreground">Candidatos</div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-secondary">4</div>
+              <div className="text-3xl font-bold text-secondary">5</div>
               <div className="text-muted-foreground">Agentes IA</div>
             </div>
             <div>
