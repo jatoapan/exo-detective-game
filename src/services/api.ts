@@ -1,6 +1,6 @@
 import { PlanetCandidate } from "@/types/exoplanet";
 
-const API_BASE_URL = "https://jatoapan.pythonanywhere.com/nasa/api";
+const API_BASE_URL = "https://cors-anywhere.herokuapp.com/https://jatoapan.pythonanywhere.com/nasa/api";
 
 // 16 imágenes predeterminadas de cuerpos celestes
 const DEFAULT_PLANET_IMAGES = [
